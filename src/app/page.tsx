@@ -1,18 +1,59 @@
-import { fetchMarkdownFile } from '../utils/markdown';
 import Markdown from '../components/Markdown';
+
+import fsp from 'fs/promises';
+import path from 'path';
 
 import { bundleMDX } from 'mdx-bundler';
 
-type SearchParams = { [key: string]: string | string[] | undefined };
+const fetchFs = async (filepath: string) => {
+  const localFilePath = path.resolve(__dirname, '../../..', filepath);
 
-const parseSearchParams = (searchParams: SearchParams) => {
-  const markdown = searchParams['markdown'];
+  const file = await fsp.readFile(localFilePath, { encoding: 'utf8' });
 
-  if (!markdown) return null;
+  return file.toString();
+};
 
-  if (typeof markdown === 'string') return markdown;
+const fetchRemote = async (
+  owner: string,
+  repo: string,
+  branch: string,
+  filepath: string
+) => {
+  const href = new URL(
+    `${owner}/${repo}/${branch}/${filepath}`,
+    'https://raw.githubusercontent.com/'
+  ).href;
 
-  return markdown.at(0);
+  const response = await fetch(href, {
+    headers: { 'User-Agent': `docs:${owner}/${repo}` },
+  });
+
+  if (!response.ok) {
+    return null;
+  }
+
+  return await response.text();
+};
+
+const fetchMarkdownFile = async (
+  owner: string,
+  repo: string,
+  branch: string,
+  filepath: string
+) => {
+  let text: string | null;
+
+  try {
+    if (process.env.NODE_ENV === 'development') {
+      text = await fetchFs(filepath);
+    } else {
+      text = await fetchRemote(owner, repo, branch, filepath);
+    }
+  } catch (e) {
+    return null;
+  }
+
+  return text;
 };
 
 const markdownToMdx = async (content: string) => {
@@ -31,6 +72,18 @@ const markdownToMdx = async (content: string) => {
   });
 
   return mdx;
+};
+
+type SearchParams = { [key: string]: string | string[] | undefined };
+
+const parseSearchParams = (searchParams: SearchParams) => {
+  const markdown = searchParams['markdown'];
+
+  if (!markdown) return null;
+
+  if (typeof markdown === 'string') return markdown;
+
+  return markdown.at(0);
 };
 
 const Page = async ({ searchParams }: { searchParams: SearchParams }) => {
