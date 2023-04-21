@@ -1,6 +1,3 @@
-import { notFound } from 'next/navigation';
-import { bundleMDX } from 'mdx-bundler';
-
 import { fetchMarkdownFile, markdownToMdx } from '~/utils/markdown';
 import Markdown from '~/components/Markdown';
 
