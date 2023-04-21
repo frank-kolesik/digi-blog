@@ -1,5 +1,5 @@
-import { fetchMarkdownFile, markdownToMdx } from '~/utils/markdown';
-import Markdown from '~/components/Markdown';
+import { fetchMarkdownFile, markdownToMdx } from '../utils/markdown';
+import Markdown from '../components/Markdown';
 
 type SearchParams = { [key: string]: string | string[] | undefined };
 

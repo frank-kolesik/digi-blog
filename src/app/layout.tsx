@@ -1,8 +1,8 @@
 import Link from 'next/link';
 
-import SearchField from '~/components/SearchField';
+import SearchField from '../components/SearchField';
 
-import '~/styles/globals.css';
+import '../styles/globals.css';
 
 export const metadata = {
   title: 'Digitale Grundbildung',

@@ -1,12 +1,11 @@
 'use client';
 
 import React from 'react';
-
-import { z } from 'zod';
+import Link from 'next/link';
 
 import debounce from 'lodash.debounce';
 import Fuse from 'fuse.js';
-import Link from 'next/link';
+import { z } from 'zod';
 
 // const CONCEPTS = {
 //   T: 'Strukturen und Funktionen digitaler informatischer und medialer Systeme und Werkzeuge',
