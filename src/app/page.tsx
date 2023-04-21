@@ -7,36 +7,6 @@ import { bundleMDX } from 'mdx-bundler';
 
 import Markdown from '~/components/Markdown';
 
-const fetchFs = async (filepath: string) => {
-  const localFilePath = path.resolve(__dirname, '../../../markdown/', filepath);
-
-  const file = await fsp.readFile(localFilePath);
-
-  return file.toString();
-};
-
-const fetchRemote = async (
-  owner: string,
-  repo: string,
-  branch: string,
-  filepath: string
-) => {
-  const href = new URL(
-    `${owner}/${repo}/${branch}/${filepath}`,
-    'https://raw.githubusercontent.com/'
-  ).href;
-
-  const response = await fetch(href, {
-    headers: { 'User-Agent': `docs:${owner}/${repo}` },
-  });
-
-  if (!response.ok) {
-    return null;
-  }
-
-  return await response.text();
-};
-
 const loader = async () => {
   const markdownPath = path.join(__dirname, '../../../markdown/');
 
