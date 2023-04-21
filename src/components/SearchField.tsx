@@ -155,7 +155,7 @@ const SearchField = () => {
 
   React.useEffect(() => {
     return () => debouncedChangeHandler.cancel();
-  }, []);
+  }, [debouncedChangeHandler]);
 
   const inputIsNotEmpty = (inputRef.current?.value.trim().length ?? 0) > 0;
 
