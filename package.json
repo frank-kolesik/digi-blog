@@ -18,6 +18,8 @@
     "next": "13.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "rehype-slug": "^5.1.0",
+    "remark-gfm": "^3.0.1",
     "zod": "^3.21.4"
   },
   "devDependencies": {

@@ -1,31 +1,48 @@
-import fsp from 'fs/promises';
-import fs from 'fs';
-import path from 'path';
-
+import { notFound } from 'next/navigation';
 import { bundleMDX } from 'mdx-bundler';
-// import matter from 'gray-matter';
 
+import { fetchMarkdownFile, markdownToMdx } from '~/utils/markdown';
 import Markdown from '~/components/Markdown';
 
-const loader = async () => {
-  const markdownPath = path.join(__dirname, '../../../markdown/');
+type SearchParams = { [key: string]: string | string[] | undefined };
 
-  const markdownFiles = fs.readdirSync(markdownPath);
+const parseSearchParams = (searchParams: SearchParams) => {
+  const markdown = searchParams['markdown'];
 
-  const markdownContent = fs.readFileSync(
-    path.join(markdownPath, markdownFiles[0]),
-    'utf8'
-  );
+  if (!markdown) return null;
 
-  const { code, frontmatter } = await bundleMDX({
-    source: markdownContent,
-  });
+  if (typeof markdown === 'string') return markdown;
 
-  return { code, frontmatter };
+  return markdown.at(0);
 };
 
-const Home = async () => {
-  const { code, frontmatter } = await loader();
+const Page = async ({ searchParams }: { searchParams: SearchParams }) => {
+  const slug = parseSearchParams(searchParams);
+
+  if (!slug) {
+    return (
+      <div className="max-w-7xl mx-auto w-full px-4 py-8">
+        <h1>Home: NO SLUG GIVEN</h1>
+      </div>
+    );
+  }
+
+  const markdownContent = await fetchMarkdownFile(
+    'frank-kolesik',
+    'digi-blog',
+    'main',
+    `markdown/${slug}.md`
+  );
+
+  if (!markdownContent) {
+    return (
+      <div className="max-w-7xl mx-auto w-full px-4 py-8">
+        <h1>Home: NO DOCUMENT FOUND</h1>
+      </div>
+    );
+  }
+
+  const { code, frontmatter } = await markdownToMdx(markdownContent);
 
   return (
     <div className="prose prose-blue max-w-7xl mx-auto w-full px-4 py-8">
@@ -34,4 +51,4 @@ const Home = async () => {
   );
 };
 
-export default Home;
+export default Page;

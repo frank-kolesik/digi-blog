@@ -40,13 +40,6 @@ Here's a numbered list:
 
 ---
 
-```python
-# python code
-
-def foo():
-    return "bar"
-```
-
 ### An h3 header
 
 Now a nested list:

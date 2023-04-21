@@ -29,6 +29,21 @@ export default async function RootLayout({
           </div>
         </div>
 
+        <ul className="gap-2 flex max-w-7xl mx-auto w-full px-4 pt-4">
+          <li>
+            <Link href="/">Home</Link>
+          </li>
+          <li>
+            <Link href="?markdown=example">Example</Link>
+          </li>
+          <li>
+            <Link href="?markdown=comparison">Comparison</Link>
+          </li>
+          <li>
+            <Link href="?markdown=error">No Document</Link>
+          </li>
+        </ul>
+
         {children}
       </body>
     </html>
