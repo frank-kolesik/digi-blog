@@ -1,10 +1,10 @@
 ---
-title: Test 123
-description: This is a 123 test.
-tags:
-  - bla
-  - bli
-  - blub
+titel: Test 123
+beschreibung: This is a 123 test.
+schulstufe: 5
+modul: Grundlagen
+kompetenzen:
+  - T
 ---
 
 # An h1 header

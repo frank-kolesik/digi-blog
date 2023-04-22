@@ -1,9 +1,26 @@
-import Markdown from '../components/Markdown';
-
 import fsp from 'fs/promises';
 import path from 'path';
 
 import { bundleMDX } from 'mdx-bundler';
+import { z } from 'zod';
+
+const schemaForFrontmatter = z.object({
+  titel: z.string(),
+  beschreibung: z.string(),
+  schulstufe: z.string(),
+  modul: z.string(),
+  kompetenzen: z.array(z.enum(['T', 'G', 'I'])),
+});
+
+type Frontmatter = z.infer<typeof schemaForFrontmatter>;
+
+// type Frontmatter = {
+//   titel: string;
+//   beschreibung: string;
+//   schulstufe: string;
+//   modul: string;
+//   kompetenzen: any;
+// };
 
 const fetchFs = async (filepath: string) => {
   const localFilePath = path.resolve(__dirname, '../../..', filepath);
@@ -62,7 +79,7 @@ const markdownToMdx = async (content: string) => {
     import('remark-gfm'),
   ]);
 
-  const mdx = await bundleMDX({
+  const mdx = await bundleMDX<Frontmatter>({
     source: content,
     mdxOptions: (options) => {
       options.remarkPlugins = [...(options.remarkPlugins ?? []), remarkGfm];
@@ -73,6 +90,10 @@ const markdownToMdx = async (content: string) => {
 
   return mdx;
 };
+
+import { redirect } from 'next/navigation';
+
+import Markdown from '../components/Markdown';
 
 type SearchParams = { [key: string]: string | string[] | undefined };
 
@@ -90,11 +111,7 @@ const Page = async ({ searchParams }: { searchParams: SearchParams }) => {
   const slug = parseSearchParams(searchParams);
 
   if (!slug) {
-    return (
-      <div className="max-w-7xl mx-auto w-full px-4 py-8">
-        <h1>Home: NO SLUG GIVEN</h1>
-      </div>
-    );
+    redirect('?markdown=datei-explorer');
   }
 
   const markdownContent = await fetchMarkdownFile(
@@ -115,8 +132,32 @@ const Page = async ({ searchParams }: { searchParams: SearchParams }) => {
   const { code, frontmatter } = await markdownToMdx(markdownContent);
 
   return (
-    <div className="prose prose-blue max-w-7xl mx-auto w-full px-4 py-8">
-      <Markdown code={code} />
+    <div className="max-w-7xl mx-auto w-full px-4 py-8 flex gap-8">
+      <div className="basis-80 border-r-2 border-gray-100 space-y-4 text-sm">
+        <div>
+          <span className="font-medium">Titel:</span>
+          <p className="leading-none">{frontmatter.titel}</p>
+        </div>
+
+        <div>
+          <span className="font-medium">Beschreibung:</span>
+          <p className="leading-none">{frontmatter.beschreibung}</p>
+        </div>
+
+        <div>
+          <span className="font-medium">Modul:</span>
+          <p className="leading-none">{frontmatter.modul}</p>
+        </div>
+
+        <div>
+          <span className="font-medium">Schulstufe:</span>
+          <p className="leading-none">{frontmatter.schulstufe}</p>
+        </div>
+      </div>
+
+      <div className="prose prose-blue basis-full max-w-none">
+        <Markdown code={code} />
+      </div>
     </div>
   );
 };
