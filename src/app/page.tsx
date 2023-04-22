@@ -132,8 +132,8 @@ const Page = async ({ searchParams }: { searchParams: SearchParams }) => {
   const { code, frontmatter } = await markdownToMdx(markdownContent);
 
   return (
-    <div className="max-w-7xl mx-auto w-full px-4 py-8 flex gap-8">
-      <div className="basis-80 border-r-2 border-gray-100 space-y-4 text-sm">
+    <div className="max-w-7xl mx-auto w-full px-4 py-8 flex gap-4">
+      <div className="basis-80 border-r-2 pr-4 border-gray-100 space-y-4 text-sm">
         <div>
           <span className="font-medium">Titel:</span>
           <p className="leading-none">{frontmatter.titel}</p>
