@@ -14,14 +14,6 @@ const schemaForFrontmatter = z.object({
 
 type Frontmatter = z.infer<typeof schemaForFrontmatter>;
 
-// type Frontmatter = {
-//   titel: string;
-//   beschreibung: string;
-//   schulstufe: string;
-//   modul: string;
-//   kompetenzen: any;
-// };
-
 const fetchFs = async (filepath: string) => {
   const localFilePath = path.resolve(__dirname, '../../..', filepath);
 
@@ -106,6 +98,8 @@ const parseSearchParams = (searchParams: SearchParams) => {
 
   return markdown.at(0);
 };
+
+export const runtime = 'experimental-edge';
 
 const Page = async ({ searchParams }: { searchParams: SearchParams }) => {
   const slug = parseSearchParams(searchParams);
